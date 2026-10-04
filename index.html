@@ -8,13 +8,13 @@
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 -apple-system,"Geeza Pro",system-ui,sans-serif;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 header{position:sticky;top:0;background:var(--bg);padding:12px;border-bottom:1px solid var(--bd);z-index:2}
 input[type=search]{width:100%;padding:12px 14px;font-size:17px;border:1px solid var(--bd);border-radius:12px;background:var(--card);color:var(--fg)}
-.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px}.chip{flex:none;padding:6px 14px;border-radius:99px;border:1px solid var(--bd);background:var(--card);color:var(--fg);font-size:15px}.chip.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px}.chip{flex:none;padding:6px 14px;border-radius:99px;border:1px solid var(--bd);background:var(--card);color:var(--fg);font-size:15px}.sub2:empty{display:none}.sub2{padding-top:4px}.sub2 .chip{font-size:14px;background:transparent}.sub2 .chip.on{background:var(--acc)}.chip i{font-style:normal;opacity:.65;font-size:12px;margin-inline-start:6px}.chip.on{background:var(--acc);color:#fff;border-color:var(--acc)}
 main{padding:12px;max-width:900px;margin:auto}.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 14px;margin-bottom:10px}
 .nm{font-weight:700}.sub{color:var(--mut);font-size:14px}.pr{display:flex;gap:16px;margin-top:8px;flex-wrap:wrap}.pr div{min-width:84px}.pr small{display:block;color:var(--mut);font-size:12px}.pr b{font-size:18px;color:var(--acc);font-variant-numeric:tabular-nums}
 .meta{color:var(--mut);font-size:13px;text-align:center;padding:8px}.empty{text-align:center;padding:40px 16px;color:var(--mut)}
 button.pick{padding:12px 20px;font-size:17px;border-radius:12px;border:0;background:var(--acc);color:#fff;margin-top:12px}
 </style></head><body>
-<header><input id="q" type="search" placeholder="ابحث باسم المنتج أو الماركة…" autocomplete="off"><div class="chips" id="chips"></div></header>
+<header><input id="q" type="search" placeholder="ابحث باسم المنتج أو الماركة…" autocomplete="off"><div class="chips" id="chips"></div><div class="chips sub2" id="chips2"></div></header>
 <main><div id="meta" class="meta"></div><div id="list"></div></main>
 <input id="file" type="file" accept=".json,application/json" hidden>
 <script>
@@ -27,14 +27,16 @@ async function load(){const d=await open();return new Promise(res=>{const g=d.tr
 async function save(v){const d=await open();return new Promise((res,rej)=>{const t=d.transaction('s','readwrite');t.objectStore('s').put(v,'snap');t.oncomplete=res;t.onerror=()=>rej(t.error)})}
 function check(s){if(!s||s.format!=='daleel-viewer'||s.version!==1||!Array.isArray(s.products)||!Array.isArray(s.categories)||!Array.isArray(s.subcategories)||typeof s.exportedAt!=='string')throw Error('هذا ليس ملف نسخة عرض صالحاً. صدّره من تطبيق الماك: النسخ ← تصدير نسخة العرض.');return s}
 let S=null,cat='',sub='';
+function chipRow(el,rows,cur){el.textContent='';for(const [id,n,c] of rows){const b=document.createElement('button');b.className='chip'+(id===cur?' on':'');b.dataset.id=id;b.append(n);const i=document.createElement('i');i.textContent=c;b.append(i);el.append(b)}}
 function render(){
   if(!S){$('meta').textContent='';$('chips').innerHTML='';$('list').innerHTML='<div class="empty">لا توجد أسعار بعد.<br>أرسل ملف نسخة العرض من الماك (AirDrop) ثم افتحه هنا.<br><button class="pick" onclick="$(\'file\').click()">اختيار الملف</button></div>';return}
   const cn=Object.fromEntries(S.categories.map(c=>[c.id,c.name])),sn=Object.fromEntries(S.subcategories.map(c=>[c.id,c.name]));
-  const chips=[['','الكل'],...S.categories.map(c=>[c.id,c.name])];
-  $('chips').innerHTML=chips.map(([id,n])=>`<button class="chip ${id===cat?'on':''}" data-id="${id}"></button>`).join('');
-  [...$('chips').children].forEach((b,i)=>b.textContent=chips[i][1]);
+  const cnt=f=>S.products.filter(f).length;
+  chipRow($('chips'),[['','الكل',S.products.length],...S.categories.map(c=>[c.id,c.name,cnt(p=>p.categoryId===c.id)])],cat);
+  const subs=cat?S.subcategories.filter(x=>x.categoryId===cat):[];
+  chipRow($('chips2'),subs.length?[['','الكل',cnt(p=>p.categoryId===cat)],...subs.map(x=>[x.id,x.name,cnt(p=>p.subcategoryId===x.id)])]:[],sub);
   const terms=norm($('q').value).split(/\s+/).filter(Boolean);
-  const items=S.products.filter(p=>(!cat||p.categoryId===cat)&&terms.every(t=>norm([p.name,p.brand,p.model,p.unit,cn[p.categoryId],sn[p.subcategoryId]].join(' ')).includes(t)));
+  const items=S.products.filter(p=>(!cat||p.categoryId===cat)&&(!sub||p.subcategoryId===sub)&&terms.every(t=>norm([p.name,p.brand,p.model,p.unit,cn[p.categoryId],sn[p.subcategoryId]].join(' ')).includes(t)));
   $('meta').textContent=`${items.length} منتج · آخر تحديث للأسعار: ${fmt(S.exportedAt)}`;
   const L=$('list');L.textContent='';
   if(!items.length){L.innerHTML='<div class="empty">لا توجد نتائج.</div>';return}
@@ -48,11 +50,13 @@ function render(){
   if(items.length>300){const m=document.createElement('div');m.className='meta';m.textContent='عُرض أول 300 نتيجة. ضيّق البحث لعرض الباقي.';L.append(m)}
 }
 $('q').addEventListener('input',render);
-$('chips').addEventListener('click',e=>{if(e.target.dataset.id!==undefined){cat=e.target.dataset.id;render()}});
+const hit=e=>e.target.closest('.chip');
+$('chips').addEventListener('click',e=>{const b=hit(e);if(b){cat=b.dataset.id;sub='';render();scrollTo(0,0)}});
+$('chips2').addEventListener('click',e=>{const b=hit(e);if(b){sub=b.dataset.id;render();scrollTo(0,0)}});
 $('file').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
   try{if(f.size>30e6)throw Error('الملف أكبر من المتوقع.');const n=check(JSON.parse(await f.text()));
     if(S&&n.exportedAt<S.exportedAt&&!confirm('هذه النسخة أقدم من المحفوظة على الجهاز. استبدالها؟'))return;
-    await save(n);S=n;cat='';render();alert(`تم التحديث: ${n.products.length} منتج.`)}catch(x){alert(x.message||'تعذر قراءة الملف.')}});
+    await save(n);S=n;cat='';sub='';render();alert(`تم التحديث: ${n.products.length} منتج.`)}catch(x){alert(x.message||'تعذر قراءة الملف.')}});
 // زر صغير لتحديث النسخة يظهر في أسفل القائمة
 const foot=document.createElement('div');foot.className='meta';foot.innerHTML='<button class="chip" id="upd">تحديث الأسعار من ملف</button>';document.body.append(foot);$('upd').onclick=()=>$('file').click();
 load().then(v=>{S=v;render()}).catch(()=>render());

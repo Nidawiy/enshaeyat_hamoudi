@@ -22,7 +22,7 @@ let S=null,cat='',sub='',loading=true,shown=PAGE;
 const el=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e};
 const mainPrice=p=>p.retail;
 // الموقع للزبائن: يقبل نسخة العرض العامة فقط ويحذف أي سعر غير سعر المفرد.
-const publicOnly=n=>n.public?{...n,products:n.products.map(p=>({...p,wholesale:null,cartonPrice:null,piecesCount:null}))}:null;
+const publicOnly=n=>n.public?{...n,products:n.products.map(p=>({...p,wholesale:null,cartonPrice:null}))}:null;
 function chipRow(box,rows,cur){box.replaceChildren();for(const [id,n,c] of rows){if(id&&!c&&id!==cur)continue;const b=el('button','chip'+(id===cur?' on':''),n);b.type='button';b.dataset.id=id;b.setAttribute('aria-pressed',id===cur);b.append(el('i','',c));box.append(b)}}
 function emptyState(icon,title,text){const d=el('div','empty');d.append(el('span','ic',icon),el('b','',title));if(text)d.append(text);return d}
 function price(label,v,big){const d=el('div','p'+(v==null?' na':''));if(label)d.append(el('small','',label));
@@ -32,6 +32,7 @@ function card(p,cn,sn){
   const tags=el('div','tags');
   if(p.brand)tags.append(el('span','br',p.brand));
   if(p.model)tags.append(el('span','',p.model));
+  if(p.piecesCount)tags.append(el('span','',`الكارتون ${p.piecesCount} قطعة`));
   if(!cat&&cn[p.categoryId])tags.append(el('span','',cn[p.categoryId]));
   if(!sub&&sn[p.subcategoryId])tags.append(el('span','',sn[p.subcategoryId]));
   if(tags.childElementCount)d.append(tags);

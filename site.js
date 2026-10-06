@@ -37,6 +37,7 @@ async function categories() {
     const r = await fetch('catalog.json', { cache: 'no-cache' });
     if (!r.ok) return;
     const c = validateSnapshot(await r.json());
+    if (!c.public) return;
     const count = id => c.products.filter(p => p.categoryId === id).length;
     const cats = c.categories.map(k => ({ ...k, n: count(k.id) })).filter(k => k.n).sort((a, b) => b.n - a.n);
     document.getElementById('st-products').textContent = num(c.products.length);

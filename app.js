@@ -18,9 +18,11 @@ async function stored(mode, value){
 const load=()=>stored('readonly'),save=value=>stored('readwrite',value);
 
 const PAGE=60;
-let S=null,cat='',sub='',busy=false,loading=true,note='',shown=PAGE;
+let S=null,cat='',sub='',loading=true,shown=PAGE;
 const el=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e};
-const mainPrice=p=>S.public?p.retail:p.retail??p.wholesale;
+const mainPrice=p=>p.retail;
+// الموقع للزبائن: يقبل نسخة العرض العامة فقط ويحذف أي سعر غير سعر المفرد.
+const publicOnly=n=>n.public?{...n,products:n.products.map(p=>({...p,wholesale:null,cartonPrice:null,piecesCount:null}))}:null;
 function chipRow(box,rows,cur){box.replaceChildren();for(const [id,n,c] of rows){if(id&&!c&&id!==cur)continue;const b=el('button','chip'+(id===cur?' on':''),n);b.type='button';b.dataset.id=id;b.setAttribute('aria-pressed',id===cur);b.append(el('i','',c));box.append(b)}}
 function emptyState(icon,title,text){const d=el('div','empty');d.append(el('span','ic',icon),el('b','',title));if(text)d.append(text);return d}
 function price(label,v,big){const d=el('div','p'+(v==null?' na':''));if(label)d.append(el('small','',label));
@@ -34,8 +36,7 @@ function card(p,cn,sn){
   if(!sub&&sn[p.subcategoryId])tags.append(el('span','',sn[p.subcategoryId]));
   if(tags.childElementCount)d.append(tags);
   const r=el('div','pr'),unit=p.unit&&p.unit!=='غير محدد'?p.unit:'';
-  if(S.public)r.append(price('',p.retail,true));
-  else{const m=el('div','multi');m.append(price('مفرد',p.retail),price('جملة',p.wholesale));if(p.cartonPrice!=null)m.append(price(p.piecesCount?`كارتون (${p.piecesCount})`:'كارتون',p.cartonPrice));r.append(m)}
+  r.append(price('',p.retail,true));
   if(unit)r.append(el('span','u','لكل '+unit));
   d.append(r);return d;
 }
@@ -46,14 +47,11 @@ function sorted(items){
   return [...items].sort((a,b)=>{const x=mainPrice(a),y=mainPrice(b);return x==null?(y==null?0:1):y==null?-1:(x-y)*dir});
 }
 function render(){
-  $('foot').hidden=!!S?.public;
   const L=$('list');
   if(!S){$('chips').replaceChildren();$('chips2').replaceChildren();$('count').textContent='';$('upd-at').textContent='قائمة الأسعار';
     if(loading){$('meta').textContent='';L.replaceChildren(...Array.from({length:6},()=>el('div','skel')));L.className='grid';return}
-    $('meta').textContent=note;L.className='';
-    const b=el('button','pick','اختيار الملف');b.type='button';b.onclick=()=>$('file').click();
-    const t=document.createDocumentFragment();t.append('أرسل ملف نسخة العرض من الماك (AirDrop) ثم افتحه هنا.',document.createElement('br'),b);
-    L.replaceChildren(emptyState('📋','لا توجد أسعار بعد',t));return}
+    $('meta').textContent='';L.className='';
+    L.replaceChildren(emptyState('📋','الأسعار غير متاحة حالياً','تواصل معنا لمعرفة الأسعار.'));return}
   const cn=Object.fromEntries(S.categories.map(c=>[c.id,c.name])),sn=Object.fromEntries(S.subcategories.map(c=>[c.id,c.name]));
   const cnt=f=>S.products.filter(f).length;
   chipRow($('chips'),[['','الكل',S.products.length],...S.categories.map(c=>[c.id,c.name,cnt(p=>p.categoryId===c.id)])],cat);
@@ -76,16 +74,11 @@ const hit=e=>e.target.closest('.chip');
 const toMenu=()=>{const y=$('menu').getBoundingClientRect().top+scrollY;if(scrollY>y)scrollTo(0,y)};
 $('chips').addEventListener('click',e=>{const b=hit(e);if(b){cat=b.dataset.id;sub='';reset();toMenu();b.scrollIntoView({block:'nearest',inline:'center'})}});
 $('chips2').addEventListener('click',e=>{const b=hit(e);if(b){sub=b.dataset.id;reset();toMenu()}});
-$('upd').onclick=()=>$('file').click();
 $('top').onclick=()=>$('menu').scrollIntoView({behavior:'smooth'});
 addEventListener('scroll',()=>$('top').classList.toggle('on',$('menu').getBoundingClientRect().top<-600),{passive:true});
-$('file').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f||busy)return;busy=true;$('file').disabled=true;
-  try{if(f.size>30e6)throw Error('الملف أكبر من المتوقع.');const n=validateSnapshot(JSON.parse(await f.text()));
-    if(S&&Date.parse(n.exportedAt)<Date.parse(S.exportedAt)&&!confirm('هذه النسخة أقدم من المحفوظة على الجهاز. استبدالها؟'))return;
-    await save(n);S=n;cat='';sub='';reset();alert(`تم التحديث: ${n.products.length} منتج.`)}catch(x){alert(x.message||'تعذر قراءة الملف.')}finally{busy=false;$('file').disabled=false}});
 // نسخة النشر العام: يقرأ catalog.json من الموقع نفسه ويعتمده إن كان أحدث من المحفوظ.
-async function remote(){try{const r=await fetch('catalog.json',{cache:'no-cache'});if(!r.ok)return;const n=validateSnapshot(await r.json());
+async function remote(){try{const r=await fetch('catalog.json',{cache:'no-cache'});if(!r.ok)return;const n=publicOnly(validateSnapshot(await r.json()));if(!n)return;
   if(!S||Date.parse(n.exportedAt)>Date.parse(S.exportedAt)){S=n;cat='';sub='';shown=PAGE;await save(n).catch(()=>{})}}catch(e){}
   finally{loading=false;render()}}
-load().then(v=>{S=v?validateSnapshot(v):null;if(S)loading=false;render();remote()}).catch(()=>{note='تعذر قراءة النسخة المحفوظة. يمكنك اختيار ملف نسخة عرض صالح.';render();remote()});
+load().then(v=>{S=v?publicOnly(validateSnapshot(v)):null;if(S)loading=false;render();remote()}).catch(()=>{render();remote()});
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});

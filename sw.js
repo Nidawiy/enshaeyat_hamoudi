@@ -1,5 +1,5 @@
 const PREFIX = 'catalog-viewer-';
-const CACHE = `${PREFIX}v4`;
+const CACHE = `${PREFIX}v6`;
 const FILES = ['./', './index.html', './app.js', './snapshot.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting()));
@@ -13,7 +13,7 @@ self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (event.request.method !== 'GET' || !url.href.startsWith(self.registration.scope)) return;
   if (url.pathname.endsWith('/catalog.json')) {
-    event.respondWith(caches.open(CACHE).then(cache => fetch(event.request).then(r => { if (r.ok) cache.put(event.request, r.clone()); return r; }).catch(() => cache.match(event.request, { ignoreSearch: true }) || Response.error())));
+    event.respondWith(caches.open(CACHE).then(cache => fetch(event.request).then(r => { if (r.ok) cache.put(event.request, r.clone()); return r; }).catch(() => cache.match(event.request, { ignoreSearch: true }).then(hit => hit || Response.error()))));
     return;
   }
   event.respondWith(caches.open(CACHE).then(async cache => {

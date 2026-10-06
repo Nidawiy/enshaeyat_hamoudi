@@ -1,20 +1,73 @@
 <!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#1f6f5c">
-<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-title" content="انشائية حمودي"><title>انشائية حمودي</title>
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#1e2d3d">
+<meta name="description" content="قائمة أسعار انشائية حمودي">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-title" content="انشائية حمودي"><title>انشائية حمودي · الأسعار</title>
 <style>
-:root{--bg:#f6f7f6;--card:#fff;--fg:#1b1f1e;--mut:#6b7370;--acc:#1f6f5c;--bd:#e3e6e4}
-@media(prefers-color-scheme:dark){:root{--bg:#121514;--card:#1c211f;--fg:#eef1f0;--mut:#9aa5a1;--bd:#2b322f}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 -apple-system,"Geeza Pro",system-ui,sans-serif;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-header{position:sticky;top:0;background:var(--bg);padding:12px;border-bottom:1px solid var(--bd);z-index:2}
-input[type=search]{width:100%;padding:12px 14px;font-size:17px;border:1px solid var(--bd);border-radius:12px;background:var(--card);color:var(--fg)}
-.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px}.chip{flex:none;padding:6px 14px;border-radius:99px;border:1px solid var(--bd);background:var(--card);color:var(--fg);font-size:15px}.sub2:empty{display:none}.sub2{padding-top:4px}.sub2 .chip{font-size:14px;background:transparent}.sub2 .chip.on{background:var(--acc)}.chip i{font-style:normal;opacity:.65;font-size:12px;margin-inline-start:6px}.chip.on{background:var(--acc);color:#fff;border-color:var(--acc)}
-main{padding:12px;max-width:900px;margin:auto}.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 14px;margin-bottom:10px}
-.nm{font-weight:700}.sub{color:var(--mut);font-size:14px}.pr{display:flex;gap:16px;margin-top:8px;flex-wrap:wrap}.pr div{min-width:84px}.pr small{display:block;color:var(--mut);font-size:12px}.pr b{font-size:18px;color:var(--acc);font-variant-numeric:tabular-nums}
-.meta{color:var(--mut);font-size:13px;text-align:center;padding:8px}.empty{text-align:center;padding:40px 16px;color:var(--mut)}
-button.pick{padding:12px 20px;font-size:17px;border-radius:12px;border:0;background:var(--acc);color:#fff;margin-top:12px}
+:root{--bg:#f3f5f8;--card:#fff;--fg:#17212b;--mut:#66727f;--bd:#e2e7ee;--nav:#1e2d3d;--nav2:#2a3d52;--acc:#f5a524;--acc-fg:#1e2d3d;--blue:#3d8bd4;--tag:#eef3f9;--price:#1e2d3d;--shadow:0 1px 2px rgba(16,30,48,.06),0 4px 14px rgba(16,30,48,.05)}
+@media(prefers-color-scheme:dark){:root{--bg:#0f161e;--card:#18222d;--fg:#eaf0f6;--mut:#93a1b0;--bd:#26323f;--nav:#131d27;--nav2:#1f2c3a;--tag:#202d3b;--price:#f5b544;--blue:#7ab6ec;--shadow:none}}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 -apple-system,"SF Arabic","Geeza Pro","Segoe UI","Noto Sans Arabic",system-ui,sans-serif;padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+button,input,select{font:inherit;color:inherit}button{cursor:pointer}
+.brand{background:var(--nav);color:#fff;padding:calc(env(safe-area-inset-top) + 18px) 16px 22px}
+.brand .in{max-width:1100px;margin:auto;display:flex;align-items:center;gap:14px}
+.brand img{width:54px;height:54px;border-radius:14px;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.08)}
+.brand h1{margin:0;font-size:22px;line-height:1.25}.brand p{margin:2px 0 0;font-size:14px;color:#b8c6d4}
+.brand p b{color:var(--acc);font-weight:600}
+.bar{position:sticky;top:0;z-index:5;background:var(--nav);padding:0 12px 10px;box-shadow:0 6px 16px rgba(10,20,30,.18)}
+.bar .in{max-width:1100px;margin:auto}
+.search{position:relative}
+.search svg{position:absolute;inset-inline-start:14px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:#8796a6;pointer-events:none}
+input[type=search]{width:100%;padding:13px 46px;font-size:17px;border:0;border-radius:14px;background:#fff;color:#17212b;outline:none;-webkit-appearance:none;appearance:none}
+input[type=search]::-webkit-search-cancel-button{display:none}
+input[type=search]:focus{box-shadow:0 0 0 3px rgba(245,165,36,.55)}
+.clr{position:absolute;inset-inline-end:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;border:0;background:#e9edf2;color:#41505f;font-size:18px;line-height:1;display:none}
+.clr.on{display:block}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 2px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch}.chips::-webkit-scrollbar{display:none}
+.chips:empty{display:none}
+.chip{flex:none;display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:99px;border:1px solid rgba(255,255,255,.14);background:var(--nav2);color:#dce5ee;font-size:15px;white-space:nowrap}
+.chip i{font-style:normal;font-size:12px;min-width:20px;padding:0 6px;border-radius:99px;background:rgba(255,255,255,.1);text-align:center;font-variant-numeric:tabular-nums}
+.chip.on{background:var(--acc);border-color:var(--acc);color:var(--acc-fg);font-weight:600}.chip.on i{background:rgba(30,45,61,.15)}
+.sub2 .chip{font-size:14px;padding:5px 12px;background:transparent}.sub2 .chip.on{background:#fff;border-color:#fff;color:var(--nav)}
+main{max-width:1100px;margin:auto;padding:14px 12px 24px}
+.tools{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;color:var(--mut);font-size:14px}
+.tools select{padding:7px 10px;border-radius:10px;border:1px solid var(--bd);background:var(--card);font-size:14px}
+.tools:has(#count:empty){display:none}
+.grid{display:grid;gap:10px;grid-template-columns:1fr}
+@media(min-width:640px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:980px){.grid{grid-template-columns:repeat(3,1fr)}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px;min-height:118px}
+.nm{font-weight:700;font-size:17px;line-height:1.4;overflow-wrap:anywhere}
+.tags{display:flex;flex-wrap:wrap;gap:6px}.tags span{font-size:12.5px;padding:2px 9px;border-radius:8px;background:var(--tag);color:var(--mut)}
+.tags .br{color:var(--blue);font-weight:600}
+.pr{margin-top:auto;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:6px 16px;padding-top:8px;border-top:1px dashed var(--bd)}
+.pr .u{color:var(--mut);font-size:13px}
+.p{display:flex;align-items:baseline;gap:5px}.p small{color:var(--mut);font-size:12px}
+.p b{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.3px;color:var(--price)}.p em{font-style:normal;font-size:13px;color:var(--mut)}
+.p.na b{font-size:15px;font-weight:600;color:var(--mut)}
+.multi{display:flex;gap:18px;flex-wrap:wrap}.multi .p{flex-direction:column;gap:0}.multi .p b{font-size:18px}
+.more{display:block;margin:16px auto 0;padding:12px 28px;border-radius:12px;border:1px solid var(--bd);background:var(--card);font-size:16px;font-weight:600}
+.meta{color:var(--mut);font-size:13px;text-align:center;padding:8px}
+.empty{text-align:center;padding:56px 16px;color:var(--mut)}.empty .ic{font-size:40px;display:block;margin-bottom:6px;opacity:.7}
+.empty b{display:block;color:var(--fg);font-size:18px;margin-bottom:4px}
+.skel{height:118px;border-radius:16px;background:linear-gradient(90deg,var(--card) 0,var(--tag) 50%,var(--card) 100%);background-size:200% 100%;animation:sk 1.2s infinite linear;border:1px solid var(--bd)}
+@keyframes sk{to{background-position:-200% 0}}
+@media(prefers-reduced-motion:reduce){.skel{animation:none}}
+button.pick{padding:12px 22px;font-size:17px;border-radius:12px;border:0;background:var(--acc);color:var(--acc-fg);font-weight:700;margin-top:14px}
+footer{padding:8px 12px calc(20px + env(safe-area-inset-bottom));text-align:center;color:var(--mut);font-size:13px}
+footer .chip{display:inline-flex;background:var(--card);color:var(--fg);border-color:var(--bd)}
+.top{position:fixed;inset-inline-start:16px;bottom:calc(18px + env(safe-area-inset-bottom));width:46px;height:46px;border-radius:50%;border:0;background:var(--nav);color:#fff;font-size:22px;box-shadow:0 6px 18px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .2s;z-index:6}
+.top.on{opacity:1;pointer-events:auto}
 </style></head><body>
-<header><input id="q" type="search" aria-label="البحث في نسخة العرض" placeholder="ابحث باسم المنتج أو الماركة…" autocomplete="off"><div class="chips" id="chips"></div><div class="chips sub2" id="chips2"></div></header>
-<main><div id="meta" class="meta"></div><div id="list"></div></main>
+<div class="brand"><div class="in"><img src="icon-192.png" alt="" width="54" height="54"><div><h1>انشائية حمودي</h1><p id="upd-at">قائمة الأسعار</p></div></div></div>
+<div class="bar"><div class="in">
+<div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+<input id="q" type="search" aria-label="البحث في الأسعار" placeholder="ابحث باسم المنتج أو الماركة…" autocomplete="off" enterkeyhint="search"><button class="clr" id="clr" type="button" aria-label="مسح البحث">×</button></div>
+<div class="chips" id="chips" role="tablist" aria-label="الأقسام"></div><div class="chips sub2" id="chips2" aria-label="الأقسام الفرعية"></div>
+</div></div>
+<main><div class="tools"><span id="count"></span><label>ترتيب: <select id="sort"><option value="">الافتراضي</option><option value="name">الاسم</option><option value="asc">السعر: الأقل أولاً</option><option value="desc">السعر: الأعلى أولاً</option></select></label></div>
+<div id="meta" class="meta"></div><div id="list"></div></main>
+<footer id="foot"><button class="chip" id="upd" type="button">تحديث الأسعار من ملف</button></footer>
+<button class="top" id="top" type="button" aria-label="العودة للأعلى">↑</button>
 <input id="file" type="file" accept=".json,application/json" hidden>
 <script type="module" src="app.js"></script></body></html>

@@ -15,12 +15,16 @@ for (const [sel, href] of [
   ['[data-href=waze]', SHOP.wazeUrl],
   ['[data-href=phone]', SHOP.phone && `tel:${SHOP.phone}`],
   ['[data-href=whatsapp]', SHOP.whatsapp && `https://wa.me/${SHOP.whatsapp}`],
+  ['[data-href=instagram]', SHOP.instagram && `https://www.instagram.com/${SHOP.instagram}/`],
 ]) for (const a of document.querySelectorAll(sel)) { if (href) a.href = href; else a.hidden = true; }
 document.querySelectorAll('[data-text=phone]').forEach(e => { e.textContent = SHOP.phone; e.dir = 'ltr'; });
+document.querySelectorAll('[data-text=instagram]').forEach(e => { e.textContent = `@${SHOP.instagram}`; e.dir = 'ltr'; });
 
 const ld = { '@context': 'https://schema.org', '@type': 'HardwareStore', name: SHOP.name, description: SHOP.tagline, url: location.href.split('#')[0], hasMap: SHOP.mapsUrl };
 if (SHOP.phone) ld.telephone = SHOP.phone;
 if (SHOP.address) ld.address = SHOP.address;
+if (SHOP.since) ld.foundingDate = SHOP.since;
+if (SHOP.instagram) ld.sameAs = [`https://www.instagram.com/${SHOP.instagram}/`];
 const s = document.createElement('script');
 s.type = 'application/ld+json';
 s.textContent = JSON.stringify(ld);

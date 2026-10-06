@@ -1,6 +1,6 @@
 const PREFIX = 'catalog-viewer-';
-const CACHE = `${PREFIX}v6`;
-const FILES = ['./', './index.html', './app.js', './snapshot.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
+const CACHE = `${PREFIX}v9`;
+const FILES = ['./', './index.html', './app.js', './site.js', './shop.js', './snapshot.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting()));
 });

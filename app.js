@@ -73,11 +73,12 @@ let qt;$('q').addEventListener('input',()=>{$('clr').classList.toggle('on',!!$('
 $('clr').onclick=()=>{$('q').value='';$('clr').classList.remove('on');reset();$('q').focus()};
 $('sort').addEventListener('change',reset);
 const hit=e=>e.target.closest('.chip');
-$('chips').addEventListener('click',e=>{const b=hit(e);if(b){cat=b.dataset.id;sub='';reset();scrollTo(0,0);b.scrollIntoView({block:'nearest',inline:'center'})}});
-$('chips2').addEventListener('click',e=>{const b=hit(e);if(b){sub=b.dataset.id;reset();scrollTo(0,0)}});
+const toMenu=()=>{const y=$('menu').getBoundingClientRect().top+scrollY;if(scrollY>y)scrollTo(0,y)};
+$('chips').addEventListener('click',e=>{const b=hit(e);if(b){cat=b.dataset.id;sub='';reset();toMenu();b.scrollIntoView({block:'nearest',inline:'center'})}});
+$('chips2').addEventListener('click',e=>{const b=hit(e);if(b){sub=b.dataset.id;reset();toMenu()}});
 $('upd').onclick=()=>$('file').click();
-$('top').onclick=()=>scrollTo({top:0,behavior:'smooth'});
-addEventListener('scroll',()=>$('top').classList.toggle('on',scrollY>600),{passive:true});
+$('top').onclick=()=>$('menu').scrollIntoView({behavior:'smooth'});
+addEventListener('scroll',()=>$('top').classList.toggle('on',$('menu').getBoundingClientRect().top<-600),{passive:true});
 $('file').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f||busy)return;busy=true;$('file').disabled=true;
   try{if(f.size>30e6)throw Error('الملف أكبر من المتوقع.');const n=validateSnapshot(JSON.parse(await f.text()));
     if(S&&Date.parse(n.exportedAt)<Date.parse(S.exportedAt)&&!confirm('هذه النسخة أقدم من المحفوظة على الجهاز. استبدالها؟'))return;
